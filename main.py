@@ -2,6 +2,13 @@ import streamlit as st
 from pytubefix import YouTube
 import os
 
+
+
+
+# Create a folder to save the files if it doesn't exist
+DOWNLOAD_FOLDER = "downloads"
+if not os.path.exists(DOWNLOAD_FOLDER):
+    os.makedirs(DOWNLOAD_FOLDER)
 # Function to download video
 def download_video(url, resolution):
     try:
@@ -14,8 +21,8 @@ def download_video(url, resolution):
         if video_stream:
             st.info(f"Downloading {yt.title} video in {resolution}...")
             # Download the video
-            video_stream.download()
-            st.success(f"Download complete! The video '{yt.title}' has been saved.")
+            file_path = video_stream.download(DOWNLOAD_FOLDER)
+            st.success(f"Download complete! The video '{yt.title}' has been saved at '{file_path}'.")
         else:
             st.error(f"No video found with the resolution {resolution}. Try another one.")
     except Exception as e:
@@ -33,8 +40,8 @@ def download_audio(url):
         if audio_stream:
             st.info(f"Downloading audio of {yt.title}...")
             # Download the audio
-            audio_stream.download()
-            st.success(f"Download complete! The audio of '{yt.title}' has been saved.")
+            file_path=audio_stream.download(DOWNLOAD_FOLDER)
+            st.success(f"Download complete! The audio of '{yt.title}' has been saved. at '{file_path}'")
         else:
             st.error("No audio stream available.")
     except Exception as e:
@@ -50,8 +57,8 @@ def download_both(url, resolution):
         video_stream = yt.streams.filter(res=resolution, file_extension="mp4").first()
         if video_stream:
             st.info(f"Downloading {yt.title} video in {resolution}...")
-            video_stream.download()
-            st.success(f"Video download complete! The video '{yt.title}' has been saved.")
+            file_path = video_stream.download(DOWNLOAD_FOLDER)
+            st.success(f"Download complete! The video '{yt.title}' has been saved at '{file_path}'.")
         else:
             st.error(f"No video found with the resolution {resolution}. Try another one.")
         
@@ -59,8 +66,8 @@ def download_both(url, resolution):
         audio_stream = yt.streams.filter(only_audio=True).first()
         if audio_stream:
             st.info(f"Downloading audio of {yt.title}...")
-            audio_stream.download()
-            st.success(f"Audio download complete! The audio of '{yt.title}' has been saved.")
+            file_path=audio_stream.download(DOWNLOAD_FOLDER)
+            st.success(f"Download complete! The audio of '{yt.title}' has been saved. at '{file_path}'")
         else:
             st.error("No audio stream available.")
     except Exception as e:
